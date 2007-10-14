@@ -79,6 +79,27 @@ def OnDown_Fn_F11():
 def OnDown_Fn_F12():
   volControl.VolumeUp()
 
+def OnDown_Fn_Delete():
+  volControl.VolumeUp()
+
+"""
+Fn+Up/Down -> PageUp/PageDown
+"""
+def OnDown_Fn_Up():
+  Util.SendInput(Keys.PageUp)
+
+def OnDown_Fn_Down():
+  Util.SendInput(Keys.PageDown)
+
+"""
+Fn+Left/Right -> Home/End
+"""
+def OnDown_Fn_Left():
+  Util.SendInput(Keys.Home)
+
+def OnDown_Fn_Right():
+  Util.SendInput(Keys.End)
+
 # ----
 
 # Create COM Object
