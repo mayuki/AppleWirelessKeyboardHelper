@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Prepare;Zip;MakeHash"  xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- Settings -->
+  <PropertyGroup>
+    <PackageTargetPath>Misuzilla.Applications.AppleWirelessKeyboardHelper\bin\x86\Release</PackageTargetPath>
+    <PackageOutputPath>Package</PackageOutputPath>
+  </PropertyGroup>
+
+  <!-- Tasks -->
+  <PropertyGroup>
+    <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\MSBuildTasks</MSBuildCommunityTasksPath>
+    <MisuzillaHashTasksPath>$(MSBuildProjectDirectory)\MSBuildTasks</MisuzillaHashTasksPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
+  <Import Project="$(MisuzillaHashTasksPath)\Misuzilla.Build.Tasks.Hash.Targets"/>
+
+  <ItemGroup>
+    <DefaultExclude Include="**\.svn\**" />
+    <DefaultExclude Include="**\obj\**" />
+    <DefaultExclude Include="**\Test\**" />
+    <DefaultExclude Include="**\doc\**" />
+    <DefaultExclude Include="**\Backup\**" />
+    <DefaultExclude Include="*.user" />
+    <DefaultExclude Include="*.zip" />
+    <DefaultExclude Include="**\*.vshost.exe" />
+    <DefaultExclude Include="**\*.pdb" />
+  </ItemGroup>
+
+  <Target Name="Prepare">
+    <Time Format="yyyyMMdd">
+      <Output TaskParameter="FormattedTime" PropertyName="BuildDate" />
+    </Time>
+    <CreateProperty Value="$(PackageOutputPath)\AppleWirelessKeyboardHelper-$(BuildDate).zip">
+      <Output TaskParameter="Value" PropertyName="PackageZipPath" />
+    </CreateProperty>
+    <!--
+    <CallTarget Targets="Zip" />
+    <CallTarget Targets="MakeHash" />
+    -->
+  </Target>
+
+  <ItemGroup>
+    <ZipFiles Include="$(PackageTargetPath)\**\*.*" Exclude="@(DefaultExclude)" />
+  </ItemGroup>
+
+  <Target Name="Zip">
+    <Message Text="$(PackageZipPath)" />
+    <MakeDir Directories="$(PackageOutputPath)" />
+    <Zip
+      Files="@(ZipFiles)"
+			ZipFileName="$(PackageZipPath)"
+      WorkingDirectory="$(PackageTargetPath)"
+    />
+  </Target>
+
+  <Target Name="MakeHash">
+    <MD5 Files="$(PackageZipPath)" />
+    <SHA1 Files="$(PackageZipPath)" />
+  </Target>
+
+</Project>
