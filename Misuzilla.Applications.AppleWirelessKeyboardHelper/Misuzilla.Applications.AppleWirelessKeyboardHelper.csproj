@@ -99,11 +99,6 @@
     <Component Include="Microsoft.Scripting.dll" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Default.py">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\Common.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
@@ -125,15 +120,15 @@
     </Content>
     <None Include="Resources\AppleWirelessKeyboardHelperTrayIcon16x16.ico" />
     <None Include="Resources\AppleWirelessKeyboardHelperTrayIcon.ico" />
+    <None Include="Scripts\Default.py.sample">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MasterVolumeControl\MasterVolumeControlLibrary.csproj">
       <Project>{8CE671E0-E48E-4562-8C5F-253125D9489B}</Project>
       <Name>MasterVolumeControlLibrary</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Scripts\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
