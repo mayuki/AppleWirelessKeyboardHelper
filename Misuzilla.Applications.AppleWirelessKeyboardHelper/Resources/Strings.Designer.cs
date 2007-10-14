@@ -61,6 +61,32 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper.Resources {
         }
         
         /// <summary>
+        ///   import clr
+        ///
+        ///from System import *
+        ///from System.Diagnostics import Process
+        ///from System.Runtime.InteropServices import Marshal
+        ///from System.Windows.Forms import *
+        ///from Misuzilla.Applications.AppleWirelessKeyboardHelper import Program, Util
+        ///
+        ///# Master Volume Control
+        ///clr.AddReferenceByPartialName(&quot;MasterVolumeControlLibrary&quot;)
+        ///from MasterVolumeControlLibrary import MasterVolumeControl
+        ///volControl = MasterVolumeControl.GetControl()
+        ///
+        ///def OnLoad(sender, e):
+        ///  pass
+        ///
+        ///def OnUnload(sender, e):
+        ///  volControl. [残りの文字列は切り詰められました]&quot;; に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string DefaultPythonScript {
+            get {
+                return ResourceManager.GetString("DefaultPythonScript", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Apple Wireless Keyboard connected. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string KeyboardConnected {

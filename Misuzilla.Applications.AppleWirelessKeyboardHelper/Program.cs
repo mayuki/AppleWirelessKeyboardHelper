@@ -120,24 +120,32 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
             DynamicHelpers.TopNamespace.LoadAssembly(Assembly.LoadWithPartialName("System.Windows.Forms"));
 #pragma warning restore 0618
 
-            if (!(Directory.Exists("Scripts")))
-                return;
-            
-            foreach (String path in Directory.GetFiles("Scripts"))
+            Boolean hasScripts = false;
+            if (Directory.Exists("Scripts"))
             {
-                Debug.WriteLine("Load Script: " + path);
-                try
+                foreach (String path in Directory.GetFiles("Scripts", "*.py"))
                 {
-                    Script.ExecuteFileContent(path);
+                    Debug.WriteLine("Load Script: " + path);
+                    try
+                    {
+                        hasScripts = true;
+                        Script.ExecuteFileContent(path);
+                    }
+                    catch (SyntaxErrorException se)
+                    {
+                        MessageBox.Show(String.Format(Resources.Strings.ScriptSyntaxException, path, se.Line, se.Column, se.Message), ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show(String.Format(Resources.Strings.ScriptException, path, e.Message), ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
-                catch (SyntaxErrorException se)
-                {
-                    MessageBox.Show(String.Format(Resources.Strings.ScriptSyntaxException, path, se.Line, se.Column, se.Message), ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(String.Format(Resources.Strings.ScriptException, path, e.Message), ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+            }
+
+            // 一つも読み込んでいなかったらデフォルト
+            if (!hasScripts)
+            {
+                Script.Execute("py", Resources.Strings.DefaultPythonScript);
             }
 
             OnLoad(EventArgs.Empty);
