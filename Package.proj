@@ -45,7 +45,6 @@
   </ItemGroup>
 
   <Target Name="Zip">
-    <Message Text="$(PackageZipPath)" />
     <MakeDir Directories="$(PackageOutputPath)" />
     <Zip
       Files="@(ZipFiles)"
