@@ -61,7 +61,7 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
                     {
                         Debug.WriteLine(String.Format("VendorID:{0:x}, ProductID:{1:x}, VersionNumber:{2:x}", attrib.VendorID, attrib.ProductID, attrib.VersionNumber));
                         if (attrib.VendorID == VIDApple &&
-                           (attrib.ProductID == PIDAppleWirelessKeyboard || attrib.ProductID == PIDAppleWirelessKeyboardJIS))
+                           (attrib.ProductID == PIDAppleWirelessKeyboardUS || attrib.ProductID == PIDAppleWirelessKeyboardJIS))
                         {
                             _stream = new FileStream(mHandle, FileAccess.ReadWrite, 22, true);
                             //break;
