@@ -79,6 +79,15 @@ def OnDown_Fn_F11():
 def OnDown_Fn_F12():
   volControl.VolumeUp()
 
+"""
+Fn+BackSpace -> Delete
+"""
+def OnDown_Fn_Back():
+  Util.SendInput(Keys.Delete)
+
+"""
+Fn+Delete -> VolumeUp (for F12 replaced by Delete)
+"""
 def OnDown_Fn_Delete():
   volControl.VolumeUp()
 
