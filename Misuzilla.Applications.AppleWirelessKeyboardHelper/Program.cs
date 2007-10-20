@@ -1,15 +1,15 @@
 using System;
-using System.Windows.Forms;
+using System.IO;
+using System.Text;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Reflection;
+using System.Windows.Forms;
 
 using IronPython;
 using Microsoft.Scripting;
-using System.IO;
-using System.Text;
 using Microsoft.Scripting.Hosting;
-using System.Collections.Generic;
 
 namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
 {
@@ -126,7 +126,6 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
 #pragma warning restore 0618
 
             IScriptEnvironment scriptEnv = ScriptEnvironment.GetEnvironment();
-            List<ICompiledCode> compiledCodes = new List<ICompiledCode>();
             _module = scriptEnv.CreateModule("ScriptModule");
 
             Boolean hasScripts = false;
