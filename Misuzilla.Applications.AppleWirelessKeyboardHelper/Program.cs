@@ -8,6 +8,8 @@ using IronPython;
 using Microsoft.Scripting;
 using System.IO;
 using System.Text;
+using Microsoft.Scripting.Hosting;
+using System.Collections.Generic;
 
 namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
 {
@@ -15,6 +17,7 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
     {
         private static NotifyIcon _notifyIcon;
         private const String ApplicationName = "Apple Wireless Keyboard Helper";
+        private static IScriptModule _module;
 
         public static Int32 BalloonTipTimeout = 1500;
         
@@ -88,10 +91,11 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
         /// <param name="e"></param>
         private static void Call(String funcName, EventArgs e)
         {
-            if (!Script.VariableExists(funcName))
+            Object funcObj;
+            if (!_module.TryLookupVariable(funcName, out funcObj))
                 return;
             
-            FastCallable f = Script.GetVariable(funcName) as FastCallable;
+            FastCallable f = funcObj as FastCallable;
             if (f == null)
                 return;
             try
@@ -104,6 +108,8 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
             }
         }
 
+
+        
         /// <summary>
         /// 
         /// </summary>
@@ -113,12 +119,15 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
             OnUnload(EventArgs.Empty);
             Unload = null;
             Load = null;
-            Script.ClearVariables();
 
 #pragma warning disable 0618
             DynamicHelpers.TopNamespace.LoadAssembly(Assembly.GetExecutingAssembly());
             DynamicHelpers.TopNamespace.LoadAssembly(Assembly.LoadWithPartialName("System.Windows.Forms"));
 #pragma warning restore 0618
+
+            IScriptEnvironment scriptEnv = ScriptEnvironment.GetEnvironment();
+            List<ICompiledCode> compiledCodes = new List<ICompiledCode>();
+            _module = scriptEnv.CreateModule("ScriptModule");
 
             Boolean hasScripts = false;
             if (Directory.Exists("Scripts"))
@@ -128,8 +137,9 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
                     Debug.WriteLine("Load Script: " + path);
                     try
                     {
+                        IScriptEngine engine = scriptEnv.GetLanguageProviderByFileExtension(Path.GetExtension(path)).GetEngine();
+                        engine.ExecuteFileContent(path, _module);
                         hasScripts = true;
-                        Script.ExecuteFileContent(path);
                     }
                     catch (SyntaxErrorException se)
                     {
@@ -145,9 +155,12 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
             // 一つも読み込んでいなかったらデフォルト
             if (!hasScripts)
             {
-                Script.Execute("py", Resources.Strings.DefaultPythonScript);
+                Script.GetEngine("py").Execute(Resources.Strings.DefaultPythonScript, _module);
             }
 
+            // 実行
+            _module.Execute();
+            
             OnLoad(EventArgs.Empty);
             
             ShowBalloonTip(Resources.Strings.ScriptsLoaded, ToolTipIcon.Info);
