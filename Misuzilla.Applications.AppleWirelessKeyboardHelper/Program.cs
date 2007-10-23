@@ -1,12 +1,9 @@
 using System;
-using System.IO;
-using System.Text;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
+using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Windows.Forms;
-
 using IronPython;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
@@ -22,7 +19,7 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
         public static Int32 BalloonTipTimeout = 1500;
         
         //[STAThread]
-        static void Main(string[] args)
+        static void Main()
         {
             using (Helper helper = new Helper())
             {
@@ -55,7 +52,7 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
                     Call(funcName.ToString(), e);
                 };
 
-                helper.Disconnected += delegate(Object sender, EventArgs e)
+                helper.Disconnected += delegate
                 {
                     ShowBalloonTip(Resources.Strings.KeyboardDisconnected, ToolTipIcon.Warning);
                     helper.Shutdown();
@@ -175,11 +172,11 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
             _notifyIcon.Text = ApplicationName;
             _notifyIcon.Visible = true;
             _notifyIcon.ContextMenu = new ContextMenu(new MenuItem[]{
-                new MenuItem(Resources.Strings.MenuItemReloadScripts, delegate (Object sender, EventArgs e) {
+                new MenuItem(Resources.Strings.MenuItemReloadScripts, delegate {
                     LoadScripts();
                 })
                 , new MenuItem("-")
-                , new MenuItem(Resources.Strings.MenuItemExit, delegate (Object sender, EventArgs e) {
+                , new MenuItem(Resources.Strings.MenuItemExit, delegate {
                     Application.Exit();
                 })
             });

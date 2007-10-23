@@ -1,12 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
 using System.Diagnostics;
-using System.Windows.Forms;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using Microsoft.Win32.SafeHandles;
-
 using WiimoteLib;
 
 namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
@@ -46,9 +43,9 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
             while (HIDImports.SetupDiEnumDeviceInterfaces(hDevInfo, IntPtr.Zero, ref guid, index++, ref diData))
             {
                 HIDImports.SP_DEVICE_INTERFACE_DETAIL_DATA diDetail = new HIDImports.SP_DEVICE_INTERFACE_DETAIL_DATA();
-                diDetail.cbSize = (IntPtr.Size == 8) ? (UInt32)8 : (UInt32)5; // x64:8, x86:5
+                diDetail.cbSize = (IntPtr.Size == 8) ? (UInt32)8 : 5; // x64:8, x86:5
 
-                UInt32 size = 0;
+                UInt32 size;
                 HIDImports.SetupDiGetDeviceInterfaceDetail(hDevInfo, ref diData, IntPtr.Zero, 0, out size, IntPtr.Zero);
                 if (HIDImports.SetupDiGetDeviceInterfaceDetail(hDevInfo, ref diData, ref diDetail, size, out size, IntPtr.Zero))
                 {
@@ -161,16 +158,14 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
                 return;
             }
 
-            
             Byte[] buffer = ar.AsyncState as Byte[];
-
             foreach (Byte b in buffer)
                 Debug.Write(String.Format("{0:x2} ", b));
 
             if (buffer[0] == 0x11)
             {
-                Debug.Write((AppleKeyboardKeys)buffer[1]);
-                CurrentKeyState = (AppleKeyboardKeys)buffer[1];
+                Debug.Write((AppleKeyboardKeys) buffer[1]);
+                CurrentKeyState = (AppleKeyboardKeys) buffer[1];
             }
             else if (buffer[0] == 0x13)
             {
