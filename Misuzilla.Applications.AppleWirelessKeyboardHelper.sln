@@ -2,8 +2,16 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Misuzilla.Applications.AppleWirelessKeyboardHelper", "Misuzilla.Applications.AppleWirelessKeyboardHelper\Misuzilla.Applications.AppleWirelessKeyboardHelper.csproj", "{A4D4C6B9-6641-4B3D-A023-27C8EC699F9C}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterVolumeControlLibrary", "MasterVolumeControl\MasterVolumeControlLibrary.csproj", "{8CE671E0-E48E-4562-8C5F-253125D9489B}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,8 +21,8 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A4D4C6B9-6641-4B3D-A023-27C8EC699F9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A4D4C6B9-6641-4B3D-A023-27C8EC699F9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4D4C6B9-6641-4B3D-A023-27C8EC699F9C}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{A4D4C6B9-6641-4B3D-A023-27C8EC699F9C}.Debug|Any CPU.Build.0 = Debug|x86
 		{A4D4C6B9-6641-4B3D-A023-27C8EC699F9C}.Debug|x86.ActiveCfg = Debug|x86
 		{A4D4C6B9-6641-4B3D-A023-27C8EC699F9C}.Debug|x86.Build.0 = Debug|x86
 		{A4D4C6B9-6641-4B3D-A023-27C8EC699F9C}.Release|Any CPU.ActiveCfg = Release|x86

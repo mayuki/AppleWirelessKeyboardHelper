@@ -46,7 +46,7 @@ namespace MasterVolumeControlLibrary
         public override void VolumeUp()
         {
             MixerLine masterLine = GetMasterLine();
-            masterLine.Volume = Math.Min(masterLine.Volume - masterLine.VolumeMax / 10, masterLine.VolumeMax);
+            masterLine.Volume = Math.Min(masterLine.Volume + masterLine.VolumeMax / 10, masterLine.VolumeMax);
         }
 
         public override void VolumeDown()

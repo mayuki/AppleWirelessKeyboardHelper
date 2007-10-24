@@ -134,7 +134,7 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
                     OnFnKeyCombinationDown(CurrentKeyState, (Keys)keyEventStruct.wVk, keyEventStruct);
                 //else if ((Int32)wParam == Win32.WM_KEYUP || (Int32)wParam == Win32.WM_SYSKEYUP) // KEYUP
                 //    OnFnKeyCombinationUp(CurrentKeyState, (Keys)keyEventStruct.wVk, keyEventStruct);
-                return (IntPtr)1;
+                return IntPtr.Zero;
             }
             return Win32.CallNextHookEx(_hHook, nCode, wParam, lParam);
         }
