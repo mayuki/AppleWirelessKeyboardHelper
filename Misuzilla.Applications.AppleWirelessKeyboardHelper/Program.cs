@@ -17,6 +17,9 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
         private static IScriptModule _module;
 
         public static Int32 BalloonTipTimeout = 1500;
+
+        private const UInt32 JISAlphaNumericKeyScanCode = 113; // 113
+        private const UInt32 JISKanaKeyScanCode = 114; // 114
         
         //[STAThread]
         static void Main()
@@ -37,9 +40,29 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
                     funcName.Append("_").Append(e.Key.ToString());
 
                     Call(funcName.ToString(), e);
+
+                    e.Handled = true;
                 };
 
-                helper.KeyDown += delegate(Object sender, KeyEventArgs e)
+                helper.KeyDown += delegate(Object sender, AppleKeyboardEventArgs e)
+                {
+                    if (e.KeyEventStruct.wScan != JISAlphaNumericKeyScanCode && e.KeyEventStruct.wScan != JISKanaKeyScanCode)
+                        return;
+                    
+                    StringBuilder funcName = new StringBuilder("OnDown");
+                    if (e.AppleKeyState == AppleKeyboardKeys.Fn)
+                        funcName.Append("_Fn");
+                    if (e.AppleKeyState == AppleKeyboardKeys.Eject)
+                        funcName.Append("_Eject");
+
+                    funcName.Append("_").Append((e.KeyEventStruct.wScan == JISAlphaNumericKeyScanCode) ? "JISAlphaNumeric" : "JISKana");
+
+                    Call(funcName.ToString(), e);
+
+                    e.Handled = true;
+                };
+
+                helper.SpecialKeyDown += delegate(Object sender, KeyEventArgs e)
                 {
                     StringBuilder funcName = new StringBuilder("OnDown");
                     if (e.AppleKeyboardKey == AppleKeyboardKeys.Fn)

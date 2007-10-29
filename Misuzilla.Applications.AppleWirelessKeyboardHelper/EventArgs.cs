@@ -22,6 +22,7 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
         public AppleKeyboardKeys AppleKeyState;
         public Keys Key;
         public Win32.KeyboardHookEventStruct KeyEventStruct;
+        public Boolean Handled = false;
 
         public AppleKeyboardEventArgs(AppleKeyboardKeys appleKeyState, Keys key, Win32.KeyboardHookEventStruct keyEventStruct)
         {

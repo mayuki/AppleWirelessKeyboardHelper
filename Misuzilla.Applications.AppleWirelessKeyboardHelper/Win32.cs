@@ -44,8 +44,8 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
         [StructLayout(LayoutKind.Sequential)]
         public struct KeyboardHookEventStruct
         {
-            public UInt16 wVk;
-            public UInt16 wScan;
+            public UInt32 wVk;
+            public UInt32 wScan;
             public UInt32 dwFlags;
             public UInt32 time;
             public IntPtr dwExtraInfo;
@@ -82,8 +82,8 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
         {
             public UInt16 wVk;
             public UInt16 wScan;
-            public UInt16 dwFlags;
-            public UInt16 time;
+            public UInt32 dwFlags;
+            public UInt32 time;
             public IntPtr dwExtraInfo;
         }
 

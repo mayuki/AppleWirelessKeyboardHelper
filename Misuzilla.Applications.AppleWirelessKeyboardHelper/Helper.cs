@@ -11,7 +11,9 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
     internal class Helper : IDisposable
     {
         public event EventHandler<AppleKeyboardEventArgs> FnKeyCombinationDown;
-        public event EventHandler<KeyEventArgs> KeyDown;
+        public event EventHandler<AppleKeyboardEventArgs> KeyDown;
+        public event EventHandler<KeyEventArgs> SpecialKeyDown;
+
         public event EventHandler Disconnected;
 
         public Boolean CurrentPowerButtonIsDown;
@@ -97,10 +99,10 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
             return !_hHook.IsInvalid;
         }
 
-        private void OnKeyDown()
+        private void OnSpecialKeyDown()
         {
-            if (KeyDown != null)
-                KeyDown(this, new KeyEventArgs(CurrentPowerButtonIsDown, CurrentKeyState));
+            if (SpecialKeyDown != null)
+                SpecialKeyDown(this, new KeyEventArgs(CurrentPowerButtonIsDown, CurrentKeyState));
         }
         
         private void OnFnKeyCombinationDown(AppleKeyboardKeys appleKeyState, Keys key, Win32.KeyboardHookEventStruct keyEventStruct)
@@ -108,13 +110,27 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
             if (FnKeyCombinationDown != null)
                 FnKeyCombinationDown(this, new AppleKeyboardEventArgs(appleKeyState, key, keyEventStruct));
         }
-
+        
+        private Boolean OnKeyDown(AppleKeyboardKeys appleKeyState, Keys key, Win32.KeyboardHookEventStruct keyEventStruct)
+        {
+            if (KeyDown != null)
+            {
+                AppleKeyboardEventArgs eArgs = new AppleKeyboardEventArgs(appleKeyState, key, keyEventStruct);
+                KeyDown(this, eArgs);
+                return eArgs.Handled;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        
         private IntPtr KeyboardHookProc(int nCode, IntPtr wParam, IntPtr lParam)
         {
             Win32.KeyboardHookEventStruct keyEventStruct = (Win32.KeyboardHookEventStruct)Marshal.PtrToStructure(lParam, typeof(Win32.KeyboardHookEventStruct));
             //Debug.WriteLine(String.Format("{0}, {1}, {2}", nCode, wParam, lParam));
-            //Debug.WriteLine(keyEventStruct);
-
+            Debug.WriteLine(keyEventStruct);
+            
             switch ((Keys)keyEventStruct.wVk)
             {
                 case Keys.LShiftKey:
@@ -126,15 +142,30 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
                     return Win32.CallNextHookEx(_hHook, nCode, wParam, lParam);
             }
 
-            if ((CurrentKeyState & AppleKeyboardKeys.Fn) == AppleKeyboardKeys.Fn &&
-                 keyEventStruct.dwExtraInfo != (IntPtr)0x37564
-               )
+            // Ž©•ª‚ª“Š‚°‚½‚à‚Ì‚Í–³Ž‹‚·‚é
+            if (keyEventStruct.dwExtraInfo != (IntPtr)0x37564)
             {
-                if ((Int32)wParam == Win32.WM_KEYDOWN || (Int32)wParam == Win32.WM_SYSKEYDOWN) // KEYDOWN
-                    OnFnKeyCombinationDown(CurrentKeyState, (Keys)keyEventStruct.wVk, keyEventStruct);
-                //else if ((Int32)wParam == Win32.WM_KEYUP || (Int32)wParam == Win32.WM_SYSKEYUP) // KEYUP
-                //    OnFnKeyCombinationUp(CurrentKeyState, (Keys)keyEventStruct.wVk, keyEventStruct);
-                return (IntPtr)1;
+                Boolean handled = false;
+                switch ((Int32) wParam)
+                {
+                    //case Win32.WM_KEYUP:
+                    //    handled = OnKeyUp(CurrentKeyState, Keys.None, keyEventStruct);
+                    //    break;
+                    case Win32.WM_KEYDOWN:
+                        handled = OnKeyDown(CurrentKeyState, Keys.None, keyEventStruct);
+                        break;
+                }
+                if (handled)
+                    return (IntPtr) 1;
+
+                if ((CurrentKeyState & AppleKeyboardKeys.Fn) == AppleKeyboardKeys.Fn)
+                {
+                    if ((Int32) wParam == Win32.WM_KEYDOWN || (Int32) wParam == Win32.WM_SYSKEYDOWN) // KEYDOWN
+                        OnFnKeyCombinationDown(CurrentKeyState, (Keys) keyEventStruct.wVk, keyEventStruct);
+                    //else if ((Int32)wParam == Win32.WM_KEYUP || (Int32)wParam == Win32.WM_SYSKEYUP) // KEYUP
+                    //    OnFnKeyCombinationUp(CurrentKeyState, (Keys)keyEventStruct.wVk, keyEventStruct);
+                    return (IntPtr) 1;
+                }
             }
             return Win32.CallNextHookEx(_hHook, nCode, wParam, lParam);
         }
@@ -173,7 +204,7 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
                 CurrentPowerButtonIsDown = (buffer[1] == 1);
             }
 
-            OnKeyDown();
+            OnSpecialKeyDown();
 
             Debug.WriteLine("");
 
