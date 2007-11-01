@@ -12,6 +12,7 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
     {
         public event EventHandler<AppleKeyboardEventArgs> FnKeyCombinationDown;
         public event EventHandler<AppleKeyboardEventArgs> KeyDown;
+        public event EventHandler<AppleKeyboardEventArgs> KeyUp;
         public event EventHandler<KeyEventArgs> SpecialKeyDown;
 
         public event EventHandler Disconnected;
@@ -125,6 +126,20 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
             }
         }
         
+        private Boolean OnKeyUp(AppleKeyboardKeys appleKeyState, Keys key, Win32.KeyboardHookEventStruct keyEventStruct)
+        {
+            if (KeyUp != null)
+            {
+                AppleKeyboardEventArgs eArgs = new AppleKeyboardEventArgs(appleKeyState, key, keyEventStruct);
+                KeyUp(this, eArgs);
+                return eArgs.Handled;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         private IntPtr KeyboardHookProc(int nCode, IntPtr wParam, IntPtr lParam)
         {
             Win32.KeyboardHookEventStruct keyEventStruct = (Win32.KeyboardHookEventStruct)Marshal.PtrToStructure(lParam, typeof(Win32.KeyboardHookEventStruct));
@@ -148,9 +163,9 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
                 Boolean handled = false;
                 switch ((Int32) wParam)
                 {
-                    //case Win32.WM_KEYUP:
-                    //    handled = OnKeyUp(CurrentKeyState, Keys.None, keyEventStruct);
-                    //    break;
+                    case Win32.WM_KEYUP:
+                        handled = OnKeyUp(CurrentKeyState, Keys.None, keyEventStruct);
+                        break;
                     case Win32.WM_KEYDOWN:
                         handled = OnKeyDown(CurrentKeyState, Keys.None, keyEventStruct);
                         break;

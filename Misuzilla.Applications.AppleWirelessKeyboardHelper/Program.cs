@@ -44,12 +44,12 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
                     e.Handled = true;
                 };
 
-                helper.KeyDown += delegate(Object sender, AppleKeyboardEventArgs e)
+                helper.KeyUp += delegate(Object sender, AppleKeyboardEventArgs e)
                 {
                     if (e.KeyEventStruct.wScan != JISAlphaNumericKeyScanCode && e.KeyEventStruct.wScan != JISKanaKeyScanCode)
                         return;
                     
-                    StringBuilder funcName = new StringBuilder("OnDown");
+                    StringBuilder funcName = new StringBuilder("OnUp");
                     if (e.AppleKeyState == AppleKeyboardKeys.Fn)
                         funcName.Append("_Fn");
                     if (e.AppleKeyState == AppleKeyboardKeys.Eject)
