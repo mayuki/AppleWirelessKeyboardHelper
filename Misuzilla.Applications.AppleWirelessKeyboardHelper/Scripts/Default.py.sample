@@ -37,13 +37,13 @@ def OnDown_Eject():
 """
 Alpha Numeric(eisu) (JIS only)
 """
-def OnDown_JISAlphaNumeric():
+def OnUp_JISAlphaNumeric():
   Util.SendInput(Keys.HanjaMode) # IME on/off
 
 """
 Kana Key (JIS only)
 """
-def OnDown_JISKana():
+def OnUp_JISKana():
   Util.SendInput(Keys.IMEConvert) # IME Convert
 
 """
