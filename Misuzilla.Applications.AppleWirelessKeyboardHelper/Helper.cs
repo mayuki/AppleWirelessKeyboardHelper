@@ -25,6 +25,7 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
 
         private const UInt32 VIDApple = 0x5ac;
         private const UInt32 PIDAppleWirelessKeyboardUS = 0x22c;
+        private const UInt32 PIDAppleWirelessKeyboardFR = 0x22d;
         private const UInt32 PIDAppleWirelessKeyboardJIS = 0x22e;
 
         /// <summary>
@@ -61,7 +62,7 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
                     {
                         Debug.WriteLine(String.Format("VendorID:{0:x}, ProductID:{1:x}, VersionNumber:{2:x}", attrib.VendorID, attrib.ProductID, attrib.VersionNumber));
                         if (attrib.VendorID == VIDApple &&
-                           (attrib.ProductID == PIDAppleWirelessKeyboardUS || attrib.ProductID == PIDAppleWirelessKeyboardJIS))
+                           (attrib.ProductID == PIDAppleWirelessKeyboardUS || attrib.ProductID == PIDAppleWirelessKeyboardJIS || attrib.ProductID == PIDAppleWirelessKeyboardFR))
                         {
                             _stream = new FileStream(mHandle, FileAccess.ReadWrite, 22, true);
                             //break;
