@@ -4,8 +4,9 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
-using IronPython;
+using IronPython.Runtime.Types;
 using Microsoft.Scripting;
+using Microsoft.Scripting.Actions;
 using Microsoft.Scripting.Hosting;
 
 namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
@@ -14,7 +15,8 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
     {
         private static NotifyIcon _notifyIcon;
         private const String ApplicationName = "Apple Wireless Keyboard Helper";
-        private static IScriptModule _module;
+        private static ScriptRuntime _scriptRuntime;
+        private static ScriptScope _scriptScope;
 
         public static Int32 BalloonTipTimeout = 1500;
 
@@ -26,9 +28,6 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
         {
             using (Helper helper = new Helper())
             {
-                // TypeLib より IDispatch を優先する
-                ((PythonEngineOptions)(Script.GetEngine("py").Options)).PreferComDispatchOverTypeInfo = true;
-
                 helper.FnKeyCombinationDown += delegate(Object sender, AppleKeyboardEventArgs e)
                 {
                     StringBuilder funcName = new StringBuilder("OnDown");
@@ -112,15 +111,12 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
         private static void Call(String funcName, EventArgs e)
         {
             Object funcObj;
-            if (!_module.TryLookupVariable(funcName, out funcObj))
+            if (!_scriptScope.TryGetVariable(funcName, out funcObj))
                 return;
-            
-            FastCallable f = funcObj as FastCallable;
-            if (f == null)
-                return;
+
             try
             {
-                f.Call(InvariantContext.CodeContext);
+                _scriptScope.Engine.Operations.Call(funcObj, null);
             }
             catch (Exception ex)
             {
@@ -139,14 +135,19 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
             OnUnload(EventArgs.Empty);
             Unload = null;
             Load = null;
+            
+            if (_scriptRuntime != null)
+                _scriptRuntime.Shutdown();
 
 #pragma warning disable 0618
-            DynamicHelpers.TopNamespace.LoadAssembly(Assembly.GetExecutingAssembly());
-            DynamicHelpers.TopNamespace.LoadAssembly(Assembly.LoadWithPartialName("System.Windows.Forms"));
+            ScriptRuntimeSetup scriptRuntimeSetup = new ScriptRuntimeSetup();
+            scriptRuntimeSetup.LanguageSetups.Add(new LanguageSetup("IronPython.Runtime.PythonContext, IronPython", "IronPython", new[] { "IronPython", "Python", "py" }, new[] { ".py" }));
+            _scriptRuntime = new ScriptRuntime(scriptRuntimeSetup);
+            _scriptRuntime.LoadAssembly(Assembly.GetExecutingAssembly());
+            _scriptRuntime.LoadAssembly(Assembly.LoadWithPartialName("System.Windows.Forms"));
 #pragma warning restore 0618
 
-            IScriptEnvironment scriptEnv = ScriptEnvironment.GetEnvironment();
-            _module = scriptEnv.CreateModule("ScriptModule");
+            _scriptScope = _scriptRuntime.CreateScope();
 
             Boolean hasScripts = false;
             if (Directory.Exists("Scripts"))
@@ -156,8 +157,8 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
                     Debug.WriteLine("Load Script: " + path);
                     try
                     {
-                        IScriptEngine engine = scriptEnv.GetLanguageProviderByFileExtension(Path.GetExtension(path)).GetEngine();
-                        engine.ExecuteFileContent(path, _module);
+                        ScriptEngine engine = _scriptRuntime.GetEngineByFileExtension(Path.GetExtension(path));
+                        engine.ExecuteFile(path, _scriptScope);
                         hasScripts = true;
                     }
                     catch (SyntaxErrorException se)
@@ -174,12 +175,9 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
             // 一つも読み込んでいなかったらデフォルト
             if (!hasScripts)
             {
-                Script.GetEngine("py").Execute(Resources.Strings.DefaultPythonScript, _module);
+                _scriptRuntime.GetEngine("py").Execute(Resources.Strings.DefaultPythonScript, _scriptScope);
             }
 
-            // 実行
-            _module.Execute();
-            
             OnLoad(EventArgs.Empty);
             
             ShowBalloonTip(Resources.Strings.ScriptsLoaded, ToolTipIcon.Info);
