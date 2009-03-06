@@ -11,12 +11,14 @@
     <AssemblyName>AppleWirelessKeyboardHelper</AssemblyName>
     <StartupObject>
     </StartupObject>
-    <ApplicationIcon>AppleWirelessKeyboardHelper.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>2.0</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -29,7 +31,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -109,9 +110,15 @@
     <Compile Include="Win32.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Component Include="IronPython.dll" />
-    <Component Include="IronPython.Modules.dll" />
-    <Component Include="Microsoft.Scripting.dll" />
+    <Component Include="IronPython.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Component>
+    <Component Include="IronPython.Modules.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Component>
+    <Component Include="Microsoft.Scripting.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Component>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Common.resx">
@@ -130,8 +137,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AppleWirelessKeyboardHelper.ico" />
-    <Content Include="Microsoft.Scripting.Core.dll" />
-    <Content Include="Microsoft.Scripting.ExtensionAttribute.dll" />
+    <Content Include="Microsoft.Scripting.Core.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Microsoft.Scripting.ExtensionAttribute.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Readme.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

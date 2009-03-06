@@ -141,9 +141,11 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
 
 #pragma warning disable 0618
             ScriptRuntimeSetup scriptRuntimeSetup = new ScriptRuntimeSetup();
-            scriptRuntimeSetup.LanguageSetups.Add(new LanguageSetup("IronPython.Runtime.PythonContext, IronPython", "IronPython", new[] { "IronPython", "Python", "py" }, new[] { ".py" }));
+            scriptRuntimeSetup.LanguageSetups.Add(new LanguageSetup("IronPython.Runtime.PythonContext, IronPython", "IronPython 2.0", new[] { "IronPython", "Python", "py" }, new[] { ".py" }));
             _scriptRuntime = new ScriptRuntime(scriptRuntimeSetup);
             _scriptRuntime.LoadAssembly(Assembly.GetExecutingAssembly());
+            _scriptRuntime.LoadAssembly(Assembly.LoadWithPartialName("mscorlib"));
+            _scriptRuntime.LoadAssembly(Assembly.LoadWithPartialName("System"));
             _scriptRuntime.LoadAssembly(Assembly.LoadWithPartialName("System.Windows.Forms"));
 #pragma warning restore 0618
 
@@ -175,7 +177,8 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
             // 一つも読み込んでいなかったらデフォルト
             if (!hasScripts)
             {
-                _scriptRuntime.GetEngine("py").Execute(Resources.Strings.DefaultPythonScript, _scriptScope);
+                ScriptSource scriptSource = _scriptRuntime.GetEngine("py").CreateScriptSourceFromString(Resources.Strings.DefaultPythonScript, SourceCodeKind.Statements);
+                scriptSource.Execute(_scriptScope);
             }
 
             OnLoad(EventArgs.Empty);
