@@ -116,7 +116,7 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
 
             try
             {
-                _scriptScope.Engine.Operations.Call(funcObj, null);
+                _scriptRuntime.GetEngine("py").Operations.Call(funcObj, new object[0]);
             }
             catch (Exception ex)
             {
