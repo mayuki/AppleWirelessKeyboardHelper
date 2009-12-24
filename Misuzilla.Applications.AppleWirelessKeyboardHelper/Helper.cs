@@ -26,8 +26,10 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
         private const UInt32 VIDApple = 0x5ac;
         private const UInt32 PIDAppleKeyboardJIS = 0x222;
         private const UInt32 PIDAppleWirelessKeyboardUS = 0x22c;
+        private const UInt32 PIDAppleWirelessKeyboardUS_MC184LL = 0x239;
         private const UInt32 PIDAppleWirelessKeyboardFR = 0x22d;
         private const UInt32 PIDAppleWirelessKeyboardJIS = 0x22e;
+        private const UInt32 PIDAppleWirelessKeyboardJIS_MC184JA = 0x23b;
         private const UInt32 PIDAppleKeyboardWithoutTenKeyUS = 0x21d;
 
         /// <summary>
@@ -59,7 +61,6 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
                     SafeFileHandle mHandle = HIDImports.CreateFile(diDetail.DevicePath, FileAccess.ReadWrite, FileShare.ReadWrite, IntPtr.Zero, FileMode.Open, HIDImports.EFileAttributes.Overlapped, IntPtr.Zero);
                     HIDImports.HIDD_ATTRIBUTES attrib = new HIDImports.HIDD_ATTRIBUTES();
                     attrib.Size = Marshal.SizeOf(attrib);
-
                     if (HIDImports.HidD_GetAttributes(mHandle.DangerousGetHandle(), ref attrib))
                     {
                         Debug.WriteLine(String.Format("VendorID:{0:x}, ProductID:{1:x}, VersionNumber:{2:x}", attrib.VendorID, attrib.ProductID, attrib.VersionNumber));
@@ -68,7 +69,9 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
                               attrib.ProductID == PIDAppleWirelessKeyboardJIS ||
                               attrib.ProductID == PIDAppleKeyboardJIS ||
                               attrib.ProductID == PIDAppleWirelessKeyboardFR ||
-                              attrib.ProductID == PIDAppleKeyboardWithoutTenKeyUS
+                              //attrib.ProductID == PIDAppleKeyboardWithoutTenKeyUS ||
+                              attrib.ProductID == PIDAppleWirelessKeyboardJIS_MC184JA ||
+                              attrib.ProductID == PIDAppleWirelessKeyboardUS_MC184LL
                         ))
                         {
                             _stream = new FileStream(mHandle, FileAccess.ReadWrite, 22, true);

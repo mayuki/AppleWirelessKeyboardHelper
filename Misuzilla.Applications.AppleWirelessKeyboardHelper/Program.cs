@@ -4,9 +4,8 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
-using IronPython.Runtime.Types;
+using IronPython;
 using Microsoft.Scripting;
-using Microsoft.Scripting.Actions;
 using Microsoft.Scripting.Hosting;
 
 namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
@@ -15,8 +14,7 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
     {
         private static NotifyIcon _notifyIcon;
         private const String ApplicationName = "Apple Wireless Keyboard Helper";
-        private static ScriptRuntime _scriptRuntime;
-        private static ScriptScope _scriptScope;
+        private static IScriptModule _module;
 
         public static Int32 BalloonTipTimeout = 1500;
 
@@ -28,6 +26,9 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
         {
             using (Helper helper = new Helper())
             {
+                // TypeLib より IDispatch を優先する
+                ((PythonEngineOptions)(Script.GetEngine("py").Options)).PreferComDispatchOverTypeInfo = true;
+
                 helper.FnKeyCombinationDown += delegate(Object sender, AppleKeyboardEventArgs e)
                 {
                     StringBuilder funcName = new StringBuilder("OnDown");
@@ -111,12 +112,15 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
         private static void Call(String funcName, EventArgs e)
         {
             Object funcObj;
-            if (!_scriptScope.TryGetVariable(funcName, out funcObj))
+            if (!_module.TryLookupVariable(funcName, out funcObj))
                 return;
-
+            
+            FastCallable f = funcObj as FastCallable;
+            if (f == null)
+                return;
             try
             {
-                _scriptRuntime.GetEngine("py").Operations.Call(funcObj, new object[0]);
+                f.Call(InvariantContext.CodeContext);
             }
             catch (Exception ex)
             {
@@ -135,21 +139,14 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
             OnUnload(EventArgs.Empty);
             Unload = null;
             Load = null;
-            
-            if (_scriptRuntime != null)
-                _scriptRuntime.Shutdown();
 
 #pragma warning disable 0618
-            ScriptRuntimeSetup scriptRuntimeSetup = new ScriptRuntimeSetup();
-            scriptRuntimeSetup.LanguageSetups.Add(new LanguageSetup("IronPython.Runtime.PythonContext, IronPython", "IronPython 2.0", new[] { "IronPython", "Python", "py" }, new[] { ".py" }));
-            _scriptRuntime = new ScriptRuntime(scriptRuntimeSetup);
-            _scriptRuntime.LoadAssembly(Assembly.GetExecutingAssembly());
-            _scriptRuntime.LoadAssembly(Assembly.LoadWithPartialName("mscorlib"));
-            _scriptRuntime.LoadAssembly(Assembly.LoadWithPartialName("System"));
-            _scriptRuntime.LoadAssembly(Assembly.LoadWithPartialName("System.Windows.Forms"));
+            DynamicHelpers.TopNamespace.LoadAssembly(Assembly.GetExecutingAssembly());
+            DynamicHelpers.TopNamespace.LoadAssembly(Assembly.LoadWithPartialName("System.Windows.Forms"));
 #pragma warning restore 0618
 
-            _scriptScope = _scriptRuntime.CreateScope();
+            IScriptEnvironment scriptEnv = ScriptEnvironment.GetEnvironment();
+            _module = scriptEnv.CreateModule("ScriptModule");
 
             Boolean hasScripts = false;
             if (Directory.Exists("Scripts"))
@@ -159,8 +156,8 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
                     Debug.WriteLine("Load Script: " + path);
                     try
                     {
-                        ScriptEngine engine = _scriptRuntime.GetEngineByFileExtension(Path.GetExtension(path));
-                        engine.ExecuteFile(path, _scriptScope);
+                        IScriptEngine engine = scriptEnv.GetLanguageProviderByFileExtension(Path.GetExtension(path)).GetEngine();
+                        engine.ExecuteFileContent(path, _module);
                         hasScripts = true;
                     }
                     catch (SyntaxErrorException se)
@@ -177,10 +174,12 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
             // 一つも読み込んでいなかったらデフォルト
             if (!hasScripts)
             {
-                ScriptSource scriptSource = _scriptRuntime.GetEngine("py").CreateScriptSourceFromString(Resources.Strings.DefaultPythonScript, SourceCodeKind.Statements);
-                scriptSource.Execute(_scriptScope);
+                Script.GetEngine("py").Execute(Resources.Strings.DefaultPythonScript, _module);
             }
 
+            // 実行
+            _module.Execute();
+            
             OnLoad(EventArgs.Empty);
             
             ShowBalloonTip(Resources.Strings.ScriptsLoaded, ToolTipIcon.Info);
