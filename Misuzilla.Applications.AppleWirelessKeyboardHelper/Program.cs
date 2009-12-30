@@ -20,10 +20,64 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
 
         private const UInt32 JISAlphaNumericKeyScanCode = 113; // 113
         private const UInt32 JISKanaKeyScanCode = 114; // 114
-        
+        /// <summary>
+        /// ハンドルされていない例外をキャッチして、スタックトレースを保存してデバッグに役立てる
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Exception ex = e.ExceptionObject as Exception; // Exception 以外が飛んでくるのは超特殊な場合のみ。
+
+            if (MessageBox.Show(
+                String.Format("アプリケーションの実行中に予期しない重大なエラーが発生しました。\n\nエラー内容:\n{0}\n\nエラー情報をファイルに保存し、報告していただくことで不具合の解決に役立つ可能性があります。エラー情報をファイルに保存しますか?",
+                ((Exception)(e.ExceptionObject)).Message)
+                , Application.ProductName
+                , MessageBoxButtons.YesNo
+                , MessageBoxIcon.Error
+                , MessageBoxDefaultButton.Button1
+                ) == DialogResult.Yes)
+            {
+                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                {
+                    //saveFileDialog.DefaultExt = "txt";
+                    //saveFileDialog.Filter = "テキストファイル|*.txt";
+                    //saveFileDialog.FileName = String.Format("AppleWirelessKeyboardHelper_Stacktrace_{0:yyyyMMdd_HHmmss}.txt", DateTime.Now);
+                    //if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        String filePath = String.Format(Path.Combine(Assembly.GetExecutingAssembly().CodeBase, "AppleWirelessKeyboardHelper_Stacktrace_{0:yyyyMMdd_HHmmss}.txt"), DateTime.Now);
+                        using (Stream stream = File.Open(filePath, FileMode.CreateNew))
+                        using (StreamWriter sw = new StreamWriter(stream))
+                        {
+                            Assembly asm = Assembly.GetExecutingAssembly();
+
+                            sw.WriteLine("発生時刻: {0}", DateTime.Now);
+                            sw.WriteLine();
+                            sw.WriteLine("AppleWirelessKeyboardHelper:");
+                            sw.WriteLine("========================");
+                            sw.WriteLine("バージョン: {0}", Assembly.GetExecutingAssembly().GetName().Version);
+                            sw.WriteLine("アセンブリ: {0}", Assembly.GetExecutingAssembly().FullName);
+                            sw.WriteLine();
+                            sw.WriteLine("環境情報:");
+                            sw.WriteLine("========================");
+                            sw.WriteLine("オペレーティングシステム: {0}", Environment.OSVersion);
+                            sw.WriteLine("Microsoft .NET Framework: {0}", Environment.Version);
+                            sw.WriteLine("IntPtr: {0}", IntPtr.Size);
+                            sw.WriteLine();
+                            sw.WriteLine("ハンドルされていない例外: ");
+                            sw.WriteLine("=========================");
+                            sw.WriteLine(ex.ToString());
+                        }
+                    }
+                }
+
+            }
+        }
+
         //[STAThread]
         static void Main()
         {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             using (Helper helper = new Helper())
             {
                 // TypeLib より IDispatch を優先する
