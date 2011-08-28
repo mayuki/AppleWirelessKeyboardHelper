@@ -27,9 +27,12 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
         private const UInt32 PIDAppleKeyboardJIS = 0x222;
         private const UInt32 PIDAppleWirelessKeyboardUS = 0x22c;
         private const UInt32 PIDAppleWirelessKeyboardUS_MC184LL = 0x239;
+        private const UInt32 PIDAppleWirelessKeyboardUS_MC184LLB = 0x255;
         private const UInt32 PIDAppleWirelessKeyboardFR = 0x22d;
+        private const UInt32 PIDAppleWirelessKeyboardRU_MC184RS = 0x23a;
         private const UInt32 PIDAppleWirelessKeyboardJIS = 0x22e;
         private const UInt32 PIDAppleWirelessKeyboardJIS_MC184JA = 0x23b;
+        private const UInt32 PIDAppleWirelessKeyboardJIS_MC184JB = 0x257;
         private const UInt32 PIDAppleKeyboardWithoutTenKeyUS = 0x21d;
 
         /// <summary>
@@ -69,9 +72,12 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
                               attrib.ProductID == PIDAppleWirelessKeyboardJIS ||
                               attrib.ProductID == PIDAppleKeyboardJIS ||
                               attrib.ProductID == PIDAppleWirelessKeyboardFR ||
+                              attrib.ProductID == PIDAppleWirelessKeyboardRU_MC184RS ||
                               //attrib.ProductID == PIDAppleKeyboardWithoutTenKeyUS ||
                               attrib.ProductID == PIDAppleWirelessKeyboardJIS_MC184JA ||
-                              attrib.ProductID == PIDAppleWirelessKeyboardUS_MC184LL
+                              attrib.ProductID == PIDAppleWirelessKeyboardJIS_MC184JB ||
+                              attrib.ProductID == PIDAppleWirelessKeyboardUS_MC184LL ||
+                              attrib.ProductID == PIDAppleWirelessKeyboardUS_MC184LLB
                         ))
                         {
                             _stream = new FileStream(mHandle, FileAccess.ReadWrite, 22, true);

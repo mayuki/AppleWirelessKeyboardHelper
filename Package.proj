@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Prepare;Zip;MakeHash"  xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Prepare;Zip"  xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <!-- Settings -->
   <PropertyGroup>
@@ -9,11 +9,11 @@
 
   <!-- Tasks -->
   <PropertyGroup>
-    <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\MSBuildTasks</MSBuildCommunityTasksPath>
+    <MSBuildCommunityTasksPath>$(MSBuildExtensionsPath)\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
     <MisuzillaHashTasksPath>$(MSBuildProjectDirectory)\MSBuildTasks</MisuzillaHashTasksPath>
   </PropertyGroup>
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
-  <Import Project="$(MisuzillaHashTasksPath)\Misuzilla.Build.Tasks.Hash.Targets"/>
+  <!--Import Project="$(MisuzillaHashTasksPath)\Misuzilla.Build.Tasks.Hash.Targets"/-->
 
   <ItemGroup>
     <DefaultExclude Include="**\.svn\**" />
@@ -53,9 +53,9 @@
     />
   </Target>
 
-  <Target Name="MakeHash">
+  <!--Target Name="MakeHash">
     <MD5 Files="$(PackageZipPath)" />
     <SHA1 Files="$(PackageZipPath)" />
-  </Target>
+  </Target-->
 
 </Project>
