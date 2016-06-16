@@ -1,9 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+# Visual C# Express 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Misuzilla.Applications.AppleWirelessKeyboardHelper", "Misuzilla.Applications.AppleWirelessKeyboardHelper\Misuzilla.Applications.AppleWirelessKeyboardHelper.csproj", "{A4D4C6B9-6641-4B3D-A023-27C8EC699F9C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E7997027-6A1A-4C0E-95C7-143A3CC7FC92} = {E7997027-6A1A-4C0E-95C7-143A3CC7FC92}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterVolumeControlLibrary", "MasterVolumeControl\MasterVolumeControlLibrary.csproj", "{8CE671E0-E48E-4562-8C5F-253125D9489B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitorBrightnessControlLibrary", "MonitorBrightnessControl\MonitorBrightnessControlLibrary.csproj", "{E7997027-6A1A-4C0E-95C7-143A3CC7FC92}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,6 +33,12 @@ Global
 		{8CE671E0-E48E-4562-8C5F-253125D9489B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8CE671E0-E48E-4562-8C5F-253125D9489B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8CE671E0-E48E-4562-8C5F-253125D9489B}.Release|x86.ActiveCfg = Release|Any CPU
+		{E7997027-6A1A-4C0E-95C7-143A3CC7FC92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7997027-6A1A-4C0E-95C7-143A3CC7FC92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7997027-6A1A-4C0E-95C7-143A3CC7FC92}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E7997027-6A1A-4C0E-95C7-143A3CC7FC92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7997027-6A1A-4C0E-95C7-143A3CC7FC92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7997027-6A1A-4C0E-95C7-143A3CC7FC92}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
