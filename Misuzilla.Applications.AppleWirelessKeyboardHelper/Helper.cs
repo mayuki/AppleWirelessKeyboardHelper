@@ -34,9 +34,11 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
         private const UInt32 PIDAppleWirelessKeyboardJIS_MC184JA = 0x23b;
         private const UInt32 PIDAppleWirelessKeyboardJIS_MC184JB = 0x257;
         private const UInt32 PIDAppleKeyboardWithoutTenKeyUS = 0x21d;
+        private const UInt32 PIDAppleWirelessKeyboardJIS_MB110JB = 0x251;
+
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         internal Boolean Start()
         {
@@ -77,7 +79,8 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
                               attrib.ProductID == PIDAppleWirelessKeyboardJIS_MC184JA ||
                               attrib.ProductID == PIDAppleWirelessKeyboardJIS_MC184JB ||
                               attrib.ProductID == PIDAppleWirelessKeyboardUS_MC184LL ||
-                              attrib.ProductID == PIDAppleWirelessKeyboardUS_MC184LLB
+                              attrib.ProductID == PIDAppleWirelessKeyboardUS_MC184LLB ||
+                              attrib.ProductID == PIDAppleWirelessKeyboardJIS_MB110JB
                         ))
                         {
                             _stream = new FileStream(mHandle, FileAccess.ReadWrite, 22, true);
@@ -122,13 +125,13 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
             if (SpecialKeyDown != null)
                 SpecialKeyDown(this, new KeyEventArgs(CurrentPowerButtonIsDown, CurrentKeyState));
         }
-        
+
         private void OnFnKeyCombinationDown(AppleKeyboardKeys appleKeyState, Keys key, Win32.KeyboardHookEventStruct keyEventStruct)
         {
             if (FnKeyCombinationDown != null)
                 FnKeyCombinationDown(this, new AppleKeyboardEventArgs(appleKeyState, key, keyEventStruct));
         }
-        
+
         private Boolean OnKeyDown(AppleKeyboardKeys appleKeyState, Keys key, Win32.KeyboardHookEventStruct keyEventStruct)
         {
             if (KeyDown != null)
@@ -142,7 +145,7 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
                 return false;
             }
         }
-        
+
         private Boolean OnKeyUp(AppleKeyboardKeys appleKeyState, Keys key, Win32.KeyboardHookEventStruct keyEventStruct)
         {
             if (KeyUp != null)
@@ -162,7 +165,7 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
             Win32.KeyboardHookEventStruct keyEventStruct = (Win32.KeyboardHookEventStruct)Marshal.PtrToStructure(lParam, typeof(Win32.KeyboardHookEventStruct));
             //Debug.WriteLine(String.Format("{0}, {1}, {2}", nCode, wParam, lParam));
             Debug.WriteLine(keyEventStruct);
-            
+
             switch ((Keys)keyEventStruct.wVk)
             {
                 case Keys.LShiftKey:
@@ -251,7 +254,7 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
             }
             _hHook = null;
         }
-        
+
         public void Shutdown()
         {
             if (_stream != null)
