@@ -11,11 +11,17 @@ clr.AddReferenceByPartialName("MasterVolumeControlLibrary")
 from MasterVolumeControlLibrary import MasterVolumeControl
 volControl = MasterVolumeControl.GetControl()
 
+# Monitor Brightness Control
+clr.AddReferenceByPartialName("MonitorBrightnessControlLibrary")
+from MonitorBrightnessControlLibrary import MonitorBrightnessControl
+brtControl =  MonitorBrightnessControl.GetControl()
+
 def OnLoad(sender, e):
   pass
 
 def OnUnload(sender, e):
   volControl.Dispose()
+  brtControl.Dispose()
 
 Program.Load   += OnLoad
 Program.Unload += OnUnload
@@ -49,11 +55,18 @@ def OnUp_JISKana():
 """
 Fn + F1 ... F12 (OnDown_Fn_[KeyName])
 """
+#def OnDown_Fn_F1():
+#  MessageBox.Show('Fn+F1') # System.Windows.Forms.MessageBox
+#
+#def OnDown_Fn_F2():
+#  brtControl.BrightnessUp()
+#  Program.ShowBalloonTip('Fn+F2') # ShowBalloonTip(str) or ShowBalloonTip(str, System.Windows.Forms.ToolTipIcon)
+
 def OnDown_Fn_F1():
-  MessageBox.Show('Fn+F1') # System.Windows.Forms.MessageBox
+  brtControl.BrightnessDown()
 
 def OnDown_Fn_F2():
-  Program.ShowBalloonTip('Fn+F2') # ShowBalloonTip(str) or ShowBalloonTip(str, System.Windows.Forms.ToolTipIcon)
+  brtControl.BrightnessUp()
 
 def OnDown_Fn_F3():
   if Environment.OSVersion.Version.Major >= 6:
