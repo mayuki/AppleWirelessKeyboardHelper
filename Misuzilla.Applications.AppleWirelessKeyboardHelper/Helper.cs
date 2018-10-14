@@ -25,6 +25,7 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
 
         private const UInt32 VIDApple = 0x5ac;
         private const UInt32 PIDAppleKeyboardJIS = 0x222;
+        private const UInt32 PIDAppleKeyboardUS = 0x251;
         private const UInt32 PIDAppleWirelessKeyboardUS = 0x22c;
         private const UInt32 PIDAppleWirelessKeyboardUS_MC184LL = 0x239;
         private const UInt32 PIDAppleWirelessKeyboardUS_MC184LLB = 0x255;
