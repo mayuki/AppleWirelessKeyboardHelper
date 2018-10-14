@@ -37,7 +37,6 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
         private const UInt32 PIDAppleKeyboardWithoutTenKeyUS = 0x21d;
         private const UInt32 PIDAppleWirelessKeyboardJIS_MB110JB = 0x251;
 
-
         /// <summary>
         ///
         /// </summary>
@@ -74,6 +73,7 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
                              (attrib.ProductID == PIDAppleWirelessKeyboardUS ||
                               attrib.ProductID == PIDAppleWirelessKeyboardJIS ||
                               attrib.ProductID == PIDAppleKeyboardJIS ||
+                              attrib.ProductID == PIDAppleKeyboardUS ||
                               attrib.ProductID == PIDAppleWirelessKeyboardFR ||
                               attrib.ProductID == PIDAppleWirelessKeyboardRU_MC184RS ||
                               //attrib.ProductID == PIDAppleKeyboardWithoutTenKeyUS ||
