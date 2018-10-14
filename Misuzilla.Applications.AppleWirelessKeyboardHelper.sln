@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual C# Express 2008
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2036
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Misuzilla.Applications.AppleWirelessKeyboardHelper", "Misuzilla.Applications.AppleWirelessKeyboardHelper\Misuzilla.Applications.AppleWirelessKeyboardHelper.csproj", "{A4D4C6B9-6641-4B3D-A023-27C8EC699F9C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E7997027-6A1A-4C0E-95C7-143A3CC7FC92} = {E7997027-6A1A-4C0E-95C7-143A3CC7FC92}
@@ -42,5 +44,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0F642F56-ABBD-40FE-9430-700A433A6073}
 	EndGlobalSection
 EndGlobal
