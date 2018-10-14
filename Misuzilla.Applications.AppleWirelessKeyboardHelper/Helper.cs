@@ -36,6 +36,7 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
         private const UInt32 PIDAppleWirelessKeyboardJIS_MC184JB = 0x257;
         private const UInt32 PIDAppleKeyboardWithoutTenKeyUS = 0x21d;
         private const UInt32 PIDAppleWirelessKeyboardJIS_MB110JB = 0x251;
+        private const UInt32 PIDAppleMagicKeyboardJIS = 0x267; // by @Drunkar (https://github.com/mayuki/AppleWirelessKeyboardHelper/pull/3)
 
         /// <summary>
         ///
@@ -81,7 +82,8 @@ namespace Misuzilla.Applications.AppleWirelessKeyboardHelper
                               attrib.ProductID == PIDAppleWirelessKeyboardJIS_MC184JB ||
                               attrib.ProductID == PIDAppleWirelessKeyboardUS_MC184LL ||
                               attrib.ProductID == PIDAppleWirelessKeyboardUS_MC184LLB ||
-                              attrib.ProductID == PIDAppleWirelessKeyboardJIS_MB110JB
+                              attrib.ProductID == PIDAppleWirelessKeyboardJIS_MB110JB ||
+                              attrib.ProductID == PIDAppleMagicKeyboardJIS
                         ))
                         {
                             _stream = new FileStream(mHandle, FileAccess.ReadWrite, 22, true);
